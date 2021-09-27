@@ -107,3 +107,32 @@ docker run -it --rm \
     lsd_slam \
     rosrun lsd_slam_core live_slam image:=/usb_cam/image_raw camera_info:=/usb_cam/camera_info
 ```
+
+## OpenPose
+```terminal1
+docker run -it --rm \
+    --net rosnet \
+    --name camera \
+    --env ROS_HOSTNAME=camera \
+    --env ROS_MASTER_URI=http://rosmaster:11311 \
+    --device=/dev/video0:/dev/video0 \
+    alpros-camera \
+    rosrun usb_cam usb_cam_node _video_device:=/dev/video0
+```
+```terminal2
+cd docker/openpose/
+docker build -t poseros .
+docker run -it --rm \
+    --net rosnet \
+    --name pose \
+    --env ROS_HOSTNAME=pose \
+    --env ROS_MASTER_URI=http://rosmaster:11311 \
+    --device=/dev/video0:/dev/video0 \
+    -e DISPLAY=$DISPLAY \
+    -v /tmp/.X11-unix:/tmp/.X11-unix \
+    --gpus all  \
+    -e NVIDIA_VISIBLE_DEVICES=0  \
+    poseros \
+    roslaunch ros_openpose run.launch camera:=nodepth
+```
+
