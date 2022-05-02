@@ -1,0 +1,76 @@
+Unable to open camera calibration file [/root/.ros/camera_info/head_camera.yaml]
+
+
+$rosrun usb_cam usb_cam_node
+$rosrun lsd_slam_viewer viewer
+$rosrun lsd_slam_core live_slam /image:=/usb_cam/image_raw /camera_info:=/usb_cam/camera_info
+
+root@3a423d1a8cdc:/# rosnode list
+/LSD_SLAM
+/rosout
+/usb_cam
+/viewer
+
+root@3a423d1a8cdc:/# rostopic list
+/LSD_SLAM/Debug/parameter_descriptions
+/LSD_SLAM/Debug/parameter_updates
+/LSD_SLAM/parameter_descriptions
+/LSD_SLAM/parameter_updates
+/lsd_slam/debug
+/lsd_slam/graph
+/lsd_slam/keyframes
+/lsd_slam/liveframes
+/lsd_slam/pose
+/rosout
+/rosout_agg
+/usb_cam/camera_info
+/usb_cam/image_raw
+/usb_cam/image_raw/compressed
+/usb_cam/image_raw/compressed/parameter_descriptions
+/usb_cam/image_raw/compressed/parameter_updates
+/usb_cam/image_raw/compressedDepth
+/usb_cam/image_raw/compressedDepth/parameter_descriptions
+/usb_cam/image_raw/compressedDepth/parameter_updates
+/usb_cam/image_raw/theora
+/usb_cam/image_raw/theora/parameter_descriptions
+/usb_cam/image_raw/theora/parameter_updates
+/viewer/parameter_descriptions
+/viewer/parameter_updates
+
+rostopic  info /lsd_slam/keyframes
+Type: lsd_slam_viewer/keyframeMsg
+
+rostopic  info /lsd_slam/liveframes
+Type: lsd_slam_viewer/keyframeMsg
+
+rostopic  info /lsd_slam/graph
+Type: lsd_slam_viewer/keyframeGraphMsg
+
+keyframeGraphMsg.msg
+# data as serialization of sim(3)'s: (int id, float[7] camToWorld)
+uint32 numFrames
+uint8[] frameData
+# constraints (int from, int to, float err)
+uint32 numConstraints
+uint8[] constraintsData
+
+keyframeMsg.msg
+int32 id
+float64 time
+bool isKeyframe
+# camToWorld as serialization of sophus sim(3).
+# may change with keyframeGraph-updates.
+float32[7] camToWorld
+# camera parameter (fx fy cx cy), width, height
+# will never change, but required for display.
+float32 fx
+float32 fy
+float32 cx
+float32 cy
+uint32 height
+uint32 width
+# data as InputPointDense (float idepth, float idepth_var, uchar color[4]), width x height
+# may be empty, in that case no associated pointcloud is ever shown.
+uint8[] pointcloud
+
+docker run -it --device=/dev/video0:/dev/video0 -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix --rm --gpus all -e NVIDIA_VISIBLE_DEVICES=0 lsd:latest

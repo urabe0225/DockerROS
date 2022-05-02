@@ -1,0 +1,56 @@
+```
+sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+sudo apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
+
+sudo apt update
+
+sudo apt install ros-melodic-desktop-full
+sudo apt install python-rosinstall python-rosinstall-generator python-wstool build-essential python-catkin-tools
+sudo apt install python-rosdep2
+sudo rosdep init
+rosdep update
+
+echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc
+echo "source `catkin locate --shell-verbs`" >> ~/.bashrc
+source ~/.bashrc
+```
+
+
+```
+export MQTT_HOST="192.168.3.6"
+export MQTT_PORT="1883"
+export MQTT_USERNAME="ros"
+export MQTT_PASSWORD="password_of_ros"
+export MQTT_USE_CA="false"
+export ENTITY_TYPE="delivery_robot"
+export ENTITY_ID="delivery_robot_01"
+export ENTITY_ID1="delivery_robot_01"
+export ENTITY_ID2="delivery_robot_02"
+export CMD_NAME="send_cmd"
+export EMG_NAME="send_emg"
+export ROBOT_NAME="delivery_robot_01"
+export ROBOT_NAME1="delivery_robot_01"
+export ROBOT_NAME2="delivery_robot_02"
+export NODE_SUFFIX="1"
+export TIMEZONE="Asia/Tokyo"
+export SEND_DELTA_MILLISEC="1000"
+export AUTO_CMDEXE=""
+
+```
+
+
+mkdir -p ~/catkin_ws/src
+cd ~/catkin_ws/src
+catkin_init_workspace
+git clone https://github.com/RoboticBase/uoa_poc2_bridge
+git clone https://github.com/RoboticBase/uoa_poc2_msgs
+cd ~/catkin_ws/
+source devel/setup.bash
+catkin_make
+cd ~/catkin_ws/src/uoa_poc2_bridge
+pip install paho-mqtt
+
+roslaunch uoa_poc2_bridge uoa_poc2_bridge_single.launch
+roslaunch uoa_poc2_bridge uoa_poc2_bridge_multi.launch ROBOT_NAME2:="delivery_robot_02"
+
+---

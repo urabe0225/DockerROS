@@ -1,0 +1,29 @@
+#!/usr/bin/env python
+import rospy
+import datetime
+from uoa_poc2_msgs.msg import r_emergency_command, r_emergency_result, r_command, r_result, r_pose_optional, r_angle_optional, r_angle
+import pytz
+def callback(data):
+    rospy.loginfo(rospy.get_caller_id()+"I heard %s",data)
+    pub = rospy.Publisher('/robot_bridge/delivery_robot_01/emgexe', r_emergency_result)
+    while True:
+        inp=raw_input('robot was stoped?[y/n]>>')
+        if inp == 'y':break
+    cmdexe = r_emergency_result()
+    cmdexe.id = data.id
+    cmdexe.type = data.type
+    cmdexe.time = datetime.datetime.now(pytz.timezone("Asia/Tokyo")).isoformat()
+    cmdexe.received_time = data.time
+    cmdexe.received_emergency_cmd = data.received_emergency_cmd
+    cmdexe.result = "ack"
+    cmdexe.errors = []
+    pub.publish(cmdexe)
+    rospy.loginfo(rospy.get_caller_id()+"I published %s",cmdexe)
+
+def listener():
+    rospy.init_node('stopcmd_receiver', anonymous=True)
+    rospy.Subscriber("/robot_bridge/delivery_robot_01/emg", r_emergency_command, callback)
+    rospy.spin()
+
+if __name__ == '__main__':
+    listener()

@@ -1,0 +1,30 @@
+version: '2'
+services:
+  rosmaster:
+    image: alpineros/alpine-ros:melodic-ros-core
+    container_name: rosmaster
+    ports:
+      - "80:11311"
+    command:
+      - roscore
+
+
+
+  poc2-bridge:
+    build: ./poc2-bridge
+    container_name: poc2-bridge
+    environment:
+      - "ROS_HOSTNAME=poc2-bridge"
+      - "ROS_MASTER_URI=http://rosmaster:11311"
+    extra_hosts:
+      - "localhost:192.168.3.6"
+#    command: roslaunch --wait uoa_poc2_bridge uoa_poc2_bridge_multi.launch ROBOT_NAME2:="delivery_robot_02"
+    command: roslaunch --wait uoa_poc2_bridge uoa_poc2_bridge_single.launch
+
+  dummy-robot:
+    build: ./dummy-robot
+    container_name: dummy-robot
+    environment:
+      - "ROS_HOSTNAME=dummy-robot"
+      - "ROS_MASTER_URI=http://rosmaster:11311"
+    command: rosrun beginner_tutorials command_receiver.py
