@@ -6,6 +6,7 @@ docker network create rosnet
 
 ## Deploy master image
 ```terminal1
+docker pull alpineros/alpine-ros:melodic-ros-core
 docker run -it -d \
     --net rosnet \
     --name rosmaster \
