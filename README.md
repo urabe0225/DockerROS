@@ -51,6 +51,7 @@ docker run -it --rm \
     rosrun usb_cam usb_cam_node _video_device:=/dev/video0
 ```
 ```terminal2
+xhost +local:
 cd viewer/
 docker build -t ros-view .
 docker run -it --rm \
