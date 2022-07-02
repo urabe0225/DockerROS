@@ -1,0 +1,16 @@
+version: '3'
+services:
+  listener:
+    build: ../../
+    container_name: listener
+    environment:
+      - ROS_HOSTNAME=listener
+      - ROS_MASTER_URI=http://rosmaster:11311
+    command: rosrun beginner_tutorials listener.py
+    depends_on:
+      - rosmaster
+
+networks:
+  default:
+    external:
+      name: rosnet
