@@ -1,10 +1,30 @@
 # DockerROS
-## create docker network
+## using Docker-compose
+### Deploy master image
+```
+cd master/
+docker-compose up -d
+```
+
+### build test image
+```terminal1
+cd alpros-test/compose/talker
+docker-compose up
+```
+```terminal2
+cd alpros-test/compose/listener
+docker-compose up
+```
+
+---
+
+## using Docker
+### create docker network
 ```terminal1
 docker network create rosnet
 ```
 
-## Deploy master image
+### Deploy master image
 ```terminal1
 docker pull alpineros/alpine-ros:melodic-ros-core
 docker run -it -d \
@@ -15,14 +35,14 @@ docker run -it -d \
     roscore
 ```
 
-## build test image
+### build test image
 ```terminal1
 cd alpros-test/
 docker build -t alpros-test .
 docker run -it --rm \
     --net rosnet \
-    --name talk \
-    --env ROS_HOSTNAME=talk \
+    --name talker \
+    --env ROS_HOSTNAME=talker \
     --env ROS_MASTER_URI=http://rosmaster:11311 \
     alpros-test \
     rosrun beginner_tutorials talker.py
@@ -30,14 +50,14 @@ docker run -it --rm \
 ```terminal2
 docker run -it --rm \
     --net rosnet \
-    --name listen \
-    --env ROS_HOSTNAME=listen \
+    --name listener \
+    --env ROS_HOSTNAME=listener \
     --env ROS_MASTER_URI=http://rosmaster:11311 \
     alpros-test \
     rosrun beginner_tutorials listener.py
 ```
 
-## camera
+### camera
 ```terminal1
 cd camera/
 docker build -t alpros-camera .
@@ -65,7 +85,7 @@ docker run -it --rm \
     rosrun image_view  image_view image:=/usb_cam/image_raw
 ```
 
-## LSD-SLAM
+### LSD-SLAM
 ```terminal1
 cd docker/lsd_slam/
 version="$(glxinfo | grep "OpenGL version string" | rev | cut -d" " -f1 | rev)"
@@ -110,7 +130,7 @@ docker run -it --rm \
     rosrun lsd_slam_core live_slam image:=/usb_cam/image_raw camera_info:=/usb_cam/camera_info
 ```
 
-## OpenPose
+### OpenPose
 ```terminal1
 docker run -it --rm \
     --net rosnet \
