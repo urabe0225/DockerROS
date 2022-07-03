@@ -1,0 +1,45 @@
+version: '3'
+services:
+  rosmaster:
+    image: alpineros/alpine-ros:melodic-ros-core
+    container_name: rosmaster
+    networks:
+      - rosnet
+    command: roscore
+    ports:
+      - "80:11311"
+
+  camera:
+    build: ./device
+    container_name: camera
+    networks:
+      - rosnet
+    environment:
+      - ROS_HOSTNAME=camera
+      - ROS_MASTER_URI=http://rosmaster:11311
+    devices:
+      - "/dev/video0:/dev/video0"
+    command: rosrun usb_cam usb_cam_node _video_device:=/dev/video0
+    depends_on:
+      - rosmaster
+
+  view:
+    build: ./viewer
+    container_name: view
+    networks:
+      - rosnet
+    environment:
+      - ROS_HOSTNAME=view
+      - ROS_MASTER_URI=http://rosmaster:11311
+      - DISPLAY=$DISPLAY
+    user: "1000:1000"
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    command: rosrun image_view  image_view image:=/usb_cam/image_raw
+    depends_on:
+      - rosmaster
+
+networks:
+  rosnet:
+    name: rosnet
+    driver: bridge
