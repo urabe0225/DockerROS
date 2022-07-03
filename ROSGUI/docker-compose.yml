@@ -1,0 +1,30 @@
+version: '3'
+services:
+  rosmaster:
+    image: alpineros/alpine-ros:melodic-ros-core
+    container_name: rosmaster
+    networks:
+      - rosnet
+    command: roscore
+    ports:
+      - "80:11311"
+
+  rosgui:
+    build: ./
+    container_name: rosgui
+    ports:
+      - 6080:80
+    networks:
+      - rosnet
+    environment:
+      - ROS_HOSTNAME=rosgui
+      - ROS_MASTER_URI=http://rosmaster:11311
+    volumes:
+      - /dev/shm:/dev/shm
+    depends_on:
+      - rosmaster
+
+networks:
+  rosnet:
+    name: rosnet
+    driver: bridge
