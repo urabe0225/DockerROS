@@ -120,7 +120,7 @@ docker run -p 6080:80 \
 
 ### LSD-SLAM
 ```terminal1
-cd docker/lsd_slam/
+cd lsd_slam/
 version="$(glxinfo | grep "OpenGL version string" | rev | cut -d" " -f1 | rev)"
 wget http://us.download.nvidia.com/XFree86/Linux-x86_64/"$version"/NVIDIA-Linux-x86_64-"$version".run
 mv NVIDIA-Linux-x86_64-"$version".run NVIDIA-DRIVER.run

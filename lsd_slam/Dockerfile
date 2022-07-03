@@ -1,10 +1,10 @@
 FROM osrf/ros:indigo-desktop-full
+LABEL maintainer Kazuki Urabe <urabe0225@gmail.com>
 
-LABEL maintainer="urabe0225@gmail.com>"
 ENV DEBIAN_FRONTEND=noninteractive
 
-#RUN mkdir -p /opt/rosbuild_ws/package_dir
-#WORKDIR /opt/rosbuild_ws/
+RUN mkdir -p /opt/rosbuild_ws/package_dir
+WORKDIR /opt/rosbuild_ws/
 
 RUN apt-get update
 RUN apt-get install -y mesa-utils binutils
