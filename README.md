@@ -16,6 +16,25 @@ cd alpros-test/compose/listener
 docker-compose up
 ```
 
+### Camera & Viewer
+```
+cd camera/
+docker-compose up
+```
+
+### GUI
+```
+cd ROSGUI/
+docker-compose up
+```
+
+### LSD-SLAM
+```
+
+```
+
+### OpenPose
+
 ---
 
 ## using Docker
@@ -57,9 +76,9 @@ docker run -it --rm \
     rosrun beginner_tutorials listener.py
 ```
 
-### camera
+### Camera & Viewer
 ```terminal1
-cd camera/
+cd camera/device
 docker build -t alpros-camera .
 docker run -it --rm \
     --net rosnet \
@@ -71,8 +90,7 @@ docker run -it --rm \
     rosrun usb_cam usb_cam_node _video_device:=/dev/video0
 ```
 ```terminal2
-xhost +local:
-cd viewer/
+cd camera/viewer/
 docker build -t ros-view .
 docker run -it --rm \
     --net rosnet \
@@ -80,10 +98,25 @@ docker run -it --rm \
     --env ROS_HOSTNAME=view \
     --env ROS_MASTER_URI=http://rosmaster:11311 \
     -e DISPLAY=$DISPLAY \
+    -u `id -u` \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
     ros-view \
     rosrun image_view  image_view image:=/usb_cam/image_raw
 ```
+
+### GUI
+```
+cd ROSGUI/
+docker build -t rosgui .
+docker run -p 6080:80 \
+    -v /dev/shm:/dev/shm \
+    --net rosnet \
+    --name rosgui \
+    --env ROS_HOSTNAME=rosgui \
+    --env ROS_MASTER_URI=http://rosmaster:11311 \
+    rosgui
+```
+- Browse http://127.0.0.1:6080/
 
 ### LSD-SLAM
 ```terminal1
